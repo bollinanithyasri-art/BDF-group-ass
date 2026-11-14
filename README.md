@@ -5,7 +5,13 @@
 - **Section:** AIDE2A
 - **Project Name:** PageTurn Library
 - **Project Type:** Book Lending Management System
-
+Learning Group - 02
+  Bollina Nithya Sri - 5028
+  Duriseti Varshini - 5040
+  Kakumani Charitha - 5062
+  Dadi Hemkesh - 5034
+  Illendula Manish - 5054
+  
 ## 1. Project Description
 
 PageTurn Library is a Book Lending Management System developed using Node.js, Express.js and SQLite.
