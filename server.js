@@ -100,6 +100,13 @@ app.get('/books', (req, res) => {
     let params = [];
 
     if (genre) {
+        // Validate genre before searching
+        if (!allowedGenres.includes(genre)) {
+            return res.status(400).json({
+                error: 'Invalid genre. Allowed genres are: Fiction, Science, History'
+            });
+        }
+
         sql += ' WHERE genre = ?';
         params.push(genre);
     }
