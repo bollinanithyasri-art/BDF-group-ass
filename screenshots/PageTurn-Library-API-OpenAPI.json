@@ -1,0 +1,324 @@
+
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "PageTurn Library API",
+    "description": "REST API for managing books, readers and book lending records.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Books",
+      "description": "Book management operations"
+    },
+    {
+      "name": "Readers",
+      "description": "Reader management operations"
+    },
+    {
+      "name": "Loans",
+      "description": "Book lending operations"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Check API status",
+        "responses": {
+          "200": {
+            "description": "API is running"
+          }
+        }
+      }
+    },
+    "/books": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "Get all books",
+        "parameters": [
+          {
+            "name": "genre",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["Fiction", "Science", "History"]
+            },
+            "description": "Filter books by genre"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Books retrieved successfully"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Books"],
+        "summary": "Add a new book",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookInput"
+              },
+              "example": {
+                "name": "Data Structures",
+                "genre": "Science"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Book created successfully"
+          },
+          "400": {
+            "description": "Invalid book details or genre"
+          }
+        }
+      }
+    },
+    "/books/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          }
+        }
+      ],
+      "get": {
+        "tags": ["Books"],
+        "summary": "Get a book by ID",
+        "responses": {
+          "200": {
+            "description": "Book retrieved successfully"
+          },
+          "404": {
+            "description": "Book not found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Books"],
+        "summary": "Update book details",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BookInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Book updated successfully"
+          },
+          "400": {
+            "description": "Invalid book details"
+          },
+          "404": {
+            "description": "Book not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Books"],
+        "summary": "Delete a book",
+        "responses": {
+          "200": {
+            "description": "Book deleted successfully"
+          },
+          "404": {
+            "description": "Book not found"
+          },
+          "409": {
+            "description": "Book cannot be deleted due to a conflict"
+          }
+        }
+      }
+    },
+    "/readers": {
+      "get": {
+        "tags": ["Readers"],
+        "summary": "Get all readers",
+        "responses": {
+          "200": {
+            "description": "Readers retrieved successfully"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Readers"],
+        "summary": "Add a new reader",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReaderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Reader created successfully"
+          },
+          "400": {
+            "description": "Invalid reader details"
+          }
+        }
+      }
+    },
+    "/readers/{id}": {
+      "get": {
+        "tags": ["Readers"],
+        "summary": "Get a reader by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reader retrieved successfully"
+          },
+          "404": {
+            "description": "Reader not found"
+          }
+        }
+      }
+    },
+    "/loans": {
+      "get": {
+        "tags": ["Loans"],
+        "summary": "Get all loans with reader and book names",
+        "responses": {
+          "200": {
+            "description": "Loan records retrieved successfully"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Loans"],
+        "summary": "Create a new loan",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoanInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Loan created successfully"
+          },
+          "400": {
+            "description": "Invalid loan details"
+          }
+        }
+      }
+    },
+    "/loans/{id}/return": {
+      "put": {
+        "tags": ["Loans"],
+        "summary": "Record a book return",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book return recorded successfully"
+          },
+          "404": {
+            "description": "Loan not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BookInput": {
+        "type": "object",
+        "required": ["name", "genre"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Data Structures"
+          },
+          "genre": {
+            "type": "string",
+            "enum": ["Fiction", "Science", "History"],
+            "example": "Science"
+          }
+        }
+      },
+      "ReaderInput": {
+        "type": "object",
+        "required": ["name", "email"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Nithya"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "nithya@gmail.com"
+          }
+        }
+      },
+      "LoanInput": {
+        "type": "object",
+        "required": ["reader_id", "book_id"],
+        "properties": {
+          "reader_id": {
+            "type": "integer",
+            "example": 1
+          },
+          "book_id": {
+            "type": "integer",
+            "example": 2
+          },
+          "loan_date": {
+            "type": "string",
+            "example": "2026-11-14"
+          },
+          "return_date": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
+}
